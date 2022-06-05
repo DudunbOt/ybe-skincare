@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use app\models\Products;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\search\ProductsSearch */
@@ -26,19 +27,49 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            [
+              'attribute' => 'id',
+              'contentOptions' => [
+                'style' => 'width: 50px'
+              ]
+            ],
+
             'name',
-            'descriptions:ntext',
-            'image',
+
+            [
+              'attribute' => 'image',
+              'content' => function($model){
+                return Html::img($model->getImgUrl(), ['style' => 'width: 50px']);
+              }
+            ],
+
             'price',
-            //'status',
-            //'created_at',
-            //'updated_at',
+
+            [
+              'attribute' => 'status',
+              'content' => function($model){
+                return Html::tag('span', $model->status ? 'Published' : 'Unpublished',[
+                  'class' => $model->status ? 'badge badge-success' : 'badge badge-danger'
+                ])
+              }
+            ],
+
+            [
+                'attribute' => 'created_at',
+                'format' => ['datetime'],
+                'contentOptions' => ['style' => 'white-space: nowrap']
+            ],
+
+            [
+                'attribute' => 'updated_at',
+                'format' => ['datetime'],
+                'contentOptions' => ['style' => 'white-space: nowrap']
+            ],
+
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Products $model, $key, $index, $column) {
+                'urlCreator' => function ($action, \app\models\Products $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],
