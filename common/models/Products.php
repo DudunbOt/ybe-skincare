@@ -22,6 +22,10 @@ use yii\behaviors\TimestampBehavior;
 class Products extends \yii\db\ActiveRecord
 {
     /**
+    * @var \yii\web\UploadedFile
+    */
+    public $imageFile;
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -46,6 +50,7 @@ class Products extends \yii\db\ActiveRecord
         return [
             [['name', 'price', 'status'], 'required'],
             [['descriptions'], 'string'],
+            [['imageFile'], 'image', 'extensions' => 'png,jpg,jpeg,webp', 'maxSize' => 10 * 1024 * 1024],
             [['price'], 'number'],
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 255],
@@ -63,6 +68,7 @@ class Products extends \yii\db\ActiveRecord
             'name' => 'Name',
             'descriptions' => 'Descriptions',
             'image' => 'Product Image',
+            'imageFile' => 'Product Image',
             'price' => 'Price',
             'status' => 'Published',
             'created_at' => 'Created At',
@@ -77,5 +83,35 @@ class Products extends \yii\db\ActiveRecord
     public static function find()
     {
         return new \common\models\query\ProductsQuery(get_called_class());
+    }
+
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        if ($this->imageFile) {
+            $this->image = '/products/' . Yii::$app->security->generateRandomString() . '/' . $this->imageFile->name;
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        $ok = parent::save($runValidation, $attributeNames);
+
+        if ($ok && $this->imageFile) {
+
+            $fullPath = Yii::getAlias('@frontend/web/storage' . $this->image);
+            $dir = dirname($fullPath);
+            if (!FileHelper::createDirectory($dir) | !$this->imageFile->saveAs($fullPath)) {
+                $transaction->rollBack();
+
+                return false;
+            }
+        }
+
+        $transaction->commit();
+
+        return $ok;
+    }
+
+    public function getImgUrl()
+    {
+      return Yii::$app->params['frontendUrl'].'/storage'.$this->image;
     }
 }

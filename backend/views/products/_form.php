@@ -11,7 +11,9 @@ use dosamigos\ckeditor\CKEditor;
 
 <div class="products-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+            'options' => ['enctype' => 'multipart/form-data']
+    ]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
@@ -22,16 +24,17 @@ use dosamigos\ckeditor\CKEditor;
 
 
 
-    <?= $form->field($model, 'image', [
+    <?= $form->field($model, 'imageFile', [
       'template' => '
           <div class="custom-file mb-3">
             {input}
             {label}
+            {error}
           </div>
       ',
       'inputOptions' => ['class' => 'custom-file-input'],
       'labelOptions' => ['class' => 'custom-file-label']
-      ])->fileInput() ?>
+      ])->textInput(['type' => 'file']) ?>
 
     <?= $form->field($model, 'price')->textInput([
       'maxlength' => true,
