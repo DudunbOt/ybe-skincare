@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\Products;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Products */
@@ -31,12 +32,21 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'name',
-            'descriptions:ntext',
-            'image',
+            'descriptions:html',
+            [
+                'label' => 'Image',
+                'attribute' => 'image',
+                'format' => 'html',
+                'value' => function ($model) {
+                    /** @var \common\models\Product $model */
+                    return Html::img($model->getImgUrl(), ['style' => 'width: 300px']);
+                }
+            ],
             'price:currency',
             [
                 'attribute' => 'status',
-                'content' => function ($model) {
+                'format' => 'html',
+                'value' => function ($model) {
                   /** @var \common\models\Product $model */
                     return Html::tag('span', $model->status ? 'Published' : 'Unpublished');
                 }
