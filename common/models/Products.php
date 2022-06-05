@@ -6,7 +6,6 @@ use Yii;
 use yii\helpers\FileHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-
 /**
  * This is the model class for table "products".
  *
@@ -37,8 +36,7 @@ class Products extends \yii\db\ActiveRecord
     {
       return
       [
-        TimestampBehavior::class,
-        BlameableBehavior::class
+        TimestampBehavior::class
       ];
     }
 
@@ -112,6 +110,6 @@ class Products extends \yii\db\ActiveRecord
 
     public function getImgUrl()
     {
-      return Yii::$app->params['frontendUrl'].'/storage'.$this->image;
+      return Yii::$app->params['frontendUrl'].'/storage/'.$this->image;
     }
 }
