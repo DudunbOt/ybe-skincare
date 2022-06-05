@@ -33,10 +33,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'descriptions:ntext',
             'image',
-            'price',
-            'status',
-            'created_at',
-            'updated_at',
+            'price:currency',
+            [
+                'attribute' => 'status',
+                'content' => function ($model) {
+                  /** @var \common\models\Product $model */
+                    return Html::tag('span', $model->status ? 'Published' : 'Unpublished');
+                }
+            ],
+            'created_at:datetime',
+            'updated_at:datetime',
         ],
     ]) ?>
 

@@ -11,7 +11,10 @@ return [
         ],
 
         'formatter' => [
-          'datetimeFormat' => 'php:d/m/Y H:i'
+          'datetimeFormat' => 'php:d/m/Y H:i',
+          'currencyCode' => 'IDR',
+          'decimalSeparator' => ',',
+          'thousandSeparator' => '.',
         ]
     ],
 ];
